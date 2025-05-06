@@ -265,7 +265,7 @@ export const AdminBlogListPage = () => {
       <div className="grid grid-cols-4 items-end gap-4 px-1">
         <Input
           placeholder="请输入标题"
-          value={inputParams.title}
+          value={inputParams.title ?? ""}
           onChange={(v) => {
             updateInputParams({
               title: v.target.value,
