@@ -3,8 +3,13 @@
 import { type Prisma } from "@prisma/client";
 import { isUndefined } from "lodash-es";
 
-import { ERROR_NO_PERMISSION, PUBLISHED_MAP } from "@/constants";
+import {
+  ERROR_NO_PERMISSION,
+  MEILISEARCH_INDEX_BLOGS,
+  PUBLISHED_MAP,
+} from "@/constants";
 import { noPermission } from "@/features/user";
+import { meilisearchClient } from "@/lib/meilisearch";
 import { prisma } from "@/lib/prisma";
 import { getSkip } from "@/utils";
 
@@ -137,6 +142,9 @@ export const deleteBlogByID = async (id: string) => {
       id,
     },
   });
+
+  // 同步删除 meilisearch里的 document
+  await meilisearchClient.index(MEILISEARCH_INDEX_BLOGS).deleteDocument(id);
 };
 
 export const createBlog = async (params: CreateBlogDTO) => {
@@ -163,7 +171,7 @@ export const createBlog = async (params: CreateBlogDTO) => {
     throw new Error("标题或者slug重复");
   }
 
-  await prisma.blog.create({
+  const blog = await prisma.blog.create({
     data: {
       title,
       slug,
@@ -179,6 +187,9 @@ export const createBlog = async (params: CreateBlogDTO) => {
         : undefined,
     },
   });
+
+  // 同步在 meilisearch 里创建 document
+  await meilisearchClient.index(MEILISEARCH_INDEX_BLOGS).addDocuments([blog]);
 };
 
 export const toggleBlogPublished = async (id: string) => {
@@ -195,7 +206,7 @@ export const toggleBlogPublished = async (id: string) => {
     throw new Error("Blog不存在");
   }
 
-  await prisma.blog.update({
+  const updated = await prisma.blog.update({
     data: {
       published: !blog.published,
     },
@@ -203,6 +214,11 @@ export const toggleBlogPublished = async (id: string) => {
       id,
     },
   });
+
+  // 同步更新在 meilisearch 里的document
+  await meilisearchClient
+    .index(MEILISEARCH_INDEX_BLOGS)
+    .updateDocuments([updated]);
 };
 
 export const updateBlog = async (params: UpdateBlogDTO) => {
@@ -236,7 +252,7 @@ export const updateBlog = async (params: UpdateBlogDTO) => {
     .filter((tagID) => !tags?.includes(tagID))
     .map((tagID) => ({ id: tagID }));
 
-  await prisma.blog.update({
+  const updated = await prisma.blog.update({
     where: { id },
     data: {
       title: title ?? blog.title,
@@ -252,4 +268,9 @@ export const updateBlog = async (params: UpdateBlogDTO) => {
       },
     },
   });
+
+  // 同步更新在 meilisearch 里的document
+  await meilisearchClient
+    .index(MEILISEARCH_INDEX_BLOGS)
+    .updateDocuments([updated]);
 };

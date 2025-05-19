@@ -21,7 +21,9 @@ import {
 
 import { NICKNAME, PATHS, PATHS_MAP, PLACEHOLDER_TEXT } from "@/constants";
 import { SignOutDialog } from "@/features/auth";
-import { cn } from "@/lib/utils";
+import { cn, isAdmin } from "@/lib/utils";
+
+import { SettingsModal } from "../settings";
 
 export const adminNavItems: {
   label?: string;
@@ -94,6 +96,7 @@ export const AdminLayout = ({ children }: React.PropsWithChildren) => {
   const session = useSession();
   const [signOutDialogOpen, setSignOutDialogOpen] = React.useState(false);
   const pathname = usePathname();
+  const [settingsModalOpen, setSettingsModalOpen] = React.useState(false);
 
   return (
     <div className="relative flex flex-col">
@@ -162,6 +165,13 @@ export const AdminLayout = ({ children }: React.PropsWithChildren) => {
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="cursor-pointer"
+              onClick={() => setSettingsModalOpen(true)}
+            >
+              设置
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              className="cursor-pointer"
               onClick={() => {
                 setSignOutDialogOpen(true);
               }}
@@ -175,6 +185,12 @@ export const AdminLayout = ({ children }: React.PropsWithChildren) => {
       <main className="flex-1">{children}</main>
 
       <SignOutDialog open={signOutDialogOpen} setOpen={setSignOutDialogOpen} />
+      {isAdmin(session?.data?.user?.email) && (
+        <SettingsModal
+          open={settingsModalOpen}
+          setOpen={setSettingsModalOpen}
+        />
+      )}
     </div>
   );
 };

@@ -32,7 +32,7 @@ services:
     environment:
       DATABASE_URL: postgresql://umami:umami@db:5432/umami
       DATABASE_TYPE: postgresql
-      APP_SECRET: replace-me-with-a-random-string
+      APP_SECRET: 882b91e6ae14fbc4889a49b7bd67b32a034d5fdcad4d4f040abbadbba0cfc86f
     depends_on:
       db:
         condition: service_healthy
@@ -58,6 +58,20 @@ services:
       timeout: 5s
       retries: 5
 
+  meilisearch:
+    image: getmeili/meilisearch:v1.8
+    restart: unless-stopped
+    ports:
+      - "7700:7700"
+    environment:
+      - MEILI_MASTER_KEY=QlyZuSEAvEOcG4OavcZdK+M0tmHvRFRoCXzOsLh4iK263y68HDb0Yj/Dkq3v/FOC
+      # - MEILI_ENV=production
+      # 开发环境可以进自带的页面查看数据，生产环境不可以
+      - MEILI_ENV=development
+    volumes:
+      - meilisearch_db:/data
+
 volumes:
   mysql8_data:
   umami_db_data:
+  meilisearch_db:
