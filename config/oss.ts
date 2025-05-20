@@ -7,3 +7,5 @@ export const OSS_REGION = process.env.OSS_REGION;
 export const OSS_BUCKET = process.env.OSS_BUCKET;
 
 export const OSS_UPLOAD_DIR = process.env.OSS_UPLOAD_DIR;
+
+export const OSS_BASE_URL = process.env.OSS_BASE_URL;
