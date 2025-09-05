@@ -6,7 +6,15 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Book, CodeXml, Home, LogOut, ScrollIcon, Tags } from "lucide-react";
+import {
+  Book,
+  CodeXml,
+  Home,
+  Layers,
+  LogOut,
+  ScrollIcon,
+  Tags,
+} from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
@@ -51,6 +59,12 @@ export const adminNavItems: {
     breadcrumbs: [PATHS.ADMIN_HOME, PATHS.ADMIN_BLOG],
   },
   {
+    label: PATHS_MAP[PATHS.ADMIN_SERIES],
+    link: PATHS.ADMIN_SERIES,
+    icon: <Layers className="size-4" />,
+    breadcrumbs: [PATHS.ADMIN_HOME, PATHS.ADMIN_SERIES],
+  },
+  {
     label: PATHS_MAP[PATHS.ADMIN_SNIPPET],
     link: PATHS.ADMIN_SNIPPET,
     icon: <CodeXml className="size-4" />,
@@ -75,6 +89,26 @@ export const adminNavItems: {
     hidden: true,
   },
   {
+    label: PATHS_MAP[PATHS.ADMIN_SERIES_CREATE],
+    link: PATHS.ADMIN_SERIES_CREATE,
+    breadcrumbs: [
+      PATHS.ADMIN_HOME,
+      PATHS.ADMIN_SERIES,
+      PATHS.ADMIN_SERIES_CREATE,
+    ],
+    hidden: true,
+  },
+  {
+    label: PATHS_MAP[PATHS.ADMIN_SERIES_EDIT],
+    link: PATHS.ADMIN_SERIES_EDIT,
+    breadcrumbs: [
+      PATHS.ADMIN_HOME,
+      PATHS.ADMIN_SERIES,
+      PATHS.ADMIN_SERIES_EDIT,
+    ],
+    hidden: true,
+  },
+  {
     label: PATHS_MAP[PATHS.ADMIN_SNIPPET_CREATE],
     link: PATHS.ADMIN_SNIPPET_CREATE,
     breadcrumbs: [
@@ -85,9 +119,13 @@ export const adminNavItems: {
     hidden: true,
   },
   {
-    label: PATHS_MAP[PATHS.ADMIN_BLOG_EDIT],
-    link: PATHS.ADMIN_BLOG_EDIT,
-    breadcrumbs: [PATHS.ADMIN_HOME, PATHS.ADMIN_SNIPPET, PATHS.ADMIN_BLOG_EDIT],
+    label: PATHS_MAP[PATHS.ADMIN_SNIPPET_EDIT],
+    link: PATHS.ADMIN_SNIPPET_EDIT,
+    breadcrumbs: [
+      PATHS.ADMIN_HOME,
+      PATHS.ADMIN_SNIPPET,
+      PATHS.ADMIN_SNIPPET_EDIT,
+    ],
     hidden: true,
   },
 ];

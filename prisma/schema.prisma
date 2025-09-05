@@ -89,6 +89,19 @@ model Tag {
   updatedAt DateTime @updatedAt
 }
 
+model Series {
+  title       String  @unique
+  slug        String  @unique
+  description String  @db.Text
+  cover       String?
+  published   Boolean @default(false)
+  blogs       Blog[]
+
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Blog {
   title       String  @unique
   slug        String  @unique
@@ -98,6 +111,9 @@ model Blog {
   author      String?
   published   Boolean @default(false)
   tags        Tag[]
+  series      Series? @relation(fields: [seriesId], references: [id], onDelete: SetNull)
+  seriesId    String?
+  seriesOrder Int? // 系列内文章顺序
 
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())

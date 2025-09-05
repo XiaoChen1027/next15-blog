@@ -32,12 +32,14 @@ import {
 import { BytemdEditor } from "@/components/bytemd";
 
 import { PATHS } from "@/constants";
+import { PUBLISHED_ENUM } from "@/constants";
 import { CreateTagButton } from "@/features/admin";
 import {
   type CreateBlogDTO,
   createBlogSchema,
   useCreateBlog,
 } from "@/features/blog";
+import { type Series } from "@/features/series";
 import { useGetAllTags } from "@/features/tag";
 import { uploadFile } from "@/features/upload";
 import { toSlug } from "@/lib/utils";
@@ -53,6 +55,7 @@ export const CreateBlogForm = () => {
   const createBlogQuery = useCreateBlog();
 
   const [cover, setCover] = React.useState("");
+  const [series, setSeries] = React.useState<Series[]>([]);
   const form = useForm<CreateBlogDTO>({
     resolver: zodResolver(createBlogSchema),
     defaultValues: {
@@ -64,8 +67,21 @@ export const CreateBlogForm = () => {
       cover: "",
       author: "",
       tags: [],
+      seriesId: undefined,
+      seriesOrder: undefined,
     },
   });
+
+  React.useEffect(() => {
+    const fetchSeries = async () => {
+      const res = await fetch(
+        `/api/series?published=${PUBLISHED_ENUM.PUBLISHED}&pageIndex=1&pageSize=1000&orderBy=createdAt&order=desc`,
+      );
+      const data = await res.json();
+      setSeries(data.series ?? []);
+    };
+    fetchSeries();
+  }, []);
 
   return (
     <Form {...form}>
@@ -240,6 +256,53 @@ export const CreateBlogForm = () => {
 
                     <CreateTagButton refreshAsync={getTagsQuery.refreshAsync} />
                   </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="seriesId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>所属系列</FormLabel>
+                <FormControl>
+                  <Combobox
+                    options={series.map((s) => ({
+                      label: s.title,
+                      value: s.id,
+                    }))}
+                    clearable
+                    selectPlaceholder="可选择所属系列"
+                    value={field.value}
+                    onValueChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="seriesOrder"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>系列内排序（从0开始）</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={0}
+                    value={field.value ?? ""}
+                    onChange={(e) =>
+                      field.onChange(
+                        e.target.value === ""
+                          ? undefined
+                          : Number(e.target.value),
+                      )
+                    }
+                    placeholder="不填则按默认顺序"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

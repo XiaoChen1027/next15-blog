@@ -18,6 +18,8 @@ export const createBlogSchema = z.object({
   body: z.string().min(1, { message: "长度不能少于1个字符" }),
   published: z.boolean().optional(),
   tags: z.string().array().optional(),
+  seriesId: z.string().optional(),
+  seriesOrder: z.number().min(0).optional(),
 });
 
 export const updateBlogSchema = createBlogSchema.partial().extend({

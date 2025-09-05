@@ -14,6 +14,10 @@ export const navItems: {
     link: PATHS.SITE_BLOG,
   },
   {
+    label: PATHS_MAP[PATHS.SITE_SERIES],
+    link: PATHS.SITE_SERIES,
+  },
+  {
     label: PATHS_MAP[PATHS.SITE_SNIPPET],
     link: PATHS.SITE_SNIPPET,
   },

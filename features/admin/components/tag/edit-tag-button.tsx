@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -57,6 +58,14 @@ export const EditTagButton = ({ id, refreshAsync }: EditTagButtonProps) => {
   const [open, setOpen] = React.useState(false);
   const form = useForm<UpdateTagDTO>({
     resolver: zodResolver(updateTagSchema),
+    defaultValues: {
+      id: "",
+      name: "",
+      slug: "",
+      // type 可为空，打开弹窗后再填充
+      icon: "",
+      iconDark: "",
+    },
   });
 
   const { data, loading } = useGetTag(id, open);
@@ -97,6 +106,9 @@ export const EditTagButton = ({ id, refreshAsync }: EditTagButtonProps) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>编辑标签</DialogTitle>
+          <DialogDescription>
+            修改标签名称、slug、类型与图标。
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form autoComplete="off">

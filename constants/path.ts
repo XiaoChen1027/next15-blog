@@ -4,6 +4,7 @@ export const PATHS = {
   /** ************* SITE ****************** */
   SITE_HOME: "/",
   SITE_BLOG: "/blog",
+  SITE_SERIES: "/series",
   SITE_SNIPPET: "/snippet",
   SITE_ABOUT: "/about",
   SITEMAP: "/sitemap.xml",
@@ -15,6 +16,10 @@ export const PATHS = {
   ADMIN_BLOG: "/admin/blog",
   ADMIN_BLOG_CREATE: "/admin/blog/create",
   ADMIN_BLOG_EDIT: "/admin/blog/edit",
+
+  ADMIN_SERIES: "/admin/series",
+  ADMIN_SERIES_CREATE: "/admin/series/create",
+  ADMIN_SERIES_EDIT: "/admin/series/edit",
 
   ADMIN_SNIPPET: "/admin/snippet",
   ADMIN_SNIPPET_CREATE: "/admin/snippet/create",
@@ -32,6 +37,7 @@ export const PATHS_MAP: Record<string, string> = {
   /** ************* SITE ****************** */
   [PATHS.SITE_HOME]: "首页",
   [PATHS.SITE_BLOG]: "博客",
+  [PATHS.SITE_SERIES]: "系列",
   [PATHS.SITE_SNIPPET]: "片段",
   [PATHS.SITE_ABOUT]: "关于",
   [PATHS.SITEMAP]: "站点地图",
@@ -42,6 +48,9 @@ export const PATHS_MAP: Record<string, string> = {
   [PATHS.ADMIN_BLOG]: "博客",
   [PATHS.ADMIN_BLOG_CREATE]: "创建博客",
   [PATHS.ADMIN_BLOG_EDIT]: "编辑博客",
+  [PATHS.ADMIN_SERIES]: "系列",
+  [PATHS.ADMIN_SERIES_CREATE]: "创建系列",
+  [PATHS.ADMIN_SERIES_EDIT]: "编辑系列",
   [PATHS.ADMIN_SNIPPET]: "片段",
   [PATHS.ADMIN_SNIPPET_CREATE]: "创建片段",
   [PATHS.ADMIN_SNIPPET_EDIT]: "编辑片段",
@@ -56,6 +65,7 @@ export const PATH_DESCRIPTION_MAP: Record<string, string> = {
   /** ************* SITE ****************** */
   [PATHS.SITE_HOME]: "首页",
   [PATHS.SITE_BLOG]: "这里记录了我的想法、文章，希望和大家一起交流～",
+  [PATHS.SITE_SERIES]: "系列文章，深入了解各种主题的完整内容",
   [PATHS.SITE_SNIPPET]: "多是一些零零碎碎的片段，通常是代码片段",
   [PATHS.SITE_ABOUT]: `叮～ 你有一份关于${NICKNAME}的简介，请查收～`,
 
@@ -66,6 +76,9 @@ export const PATH_DESCRIPTION_MAP: Record<string, string> = {
   [PATHS.ADMIN_BLOG_CREATE]: "在这里尽情地创作吧！",
   [PATHS.ADMIN_BLOG_EDIT]:
     "世界破破烂烂，博客修修补补，好的文章总是需要反复打磨的",
+  [PATHS.ADMIN_SERIES]: `系列文章管理，在这里对系列文章进行 增、删、改、查操作`,
+  [PATHS.ADMIN_SERIES_CREATE]: "创建系列文章，组织相关内容",
+  [PATHS.ADMIN_SERIES_EDIT]: "编辑系列文章，完善内容结构",
   [PATHS.ADMIN_SNIPPET]: `片段管理，在这里对片段进行 增、删、改、查操作`,
   [PATHS.ADMIN_SNIPPET_CREATE]:
     "Talk is cheap. Show me the code. From Linus Torvalds",

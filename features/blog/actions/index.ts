@@ -67,6 +67,7 @@ export const getBlogs = async (params: GetBlogsDTO) => {
   const blogs = await prisma.blog.findMany({
     include: {
       tags: true,
+      series: true,
     },
     orderBy: sort,
     where: cond,
@@ -84,6 +85,7 @@ export const getPublishedBlogs = async () => {
     },
     include: {
       tags: true,
+      series: true,
     },
     where: {
       published: true,
@@ -109,6 +111,15 @@ export const getBlogByID = async (id: string) => {
     where: { id },
     include: {
       tags: true,
+      series: {
+        include: {
+          blogs: {
+            where: { published: true },
+            orderBy: { seriesOrder: "asc" },
+            select: { id: true, title: true, slug: true, seriesOrder: true },
+          },
+        },
+      },
     },
   });
 
@@ -120,6 +131,15 @@ export const getPublishedBlogBySlug = async (slug: string) => {
     where: { slug, published: true },
     include: {
       tags: true,
+      series: {
+        include: {
+          blogs: {
+            where: { published: true },
+            orderBy: { seriesOrder: "asc" },
+            select: { id: true, title: true, slug: true, seriesOrder: true },
+          },
+        },
+      },
     },
   });
 
@@ -158,8 +178,18 @@ export const createBlog = async (params: CreateBlogDTO) => {
     throw new Error(error);
   }
 
-  const { title, slug, description, body, published, cover, author, tags } =
-    result.data;
+  const {
+    title,
+    slug,
+    description,
+    body,
+    published,
+    cover,
+    author,
+    tags,
+    seriesId,
+    seriesOrder,
+  } = result.data;
 
   const blogs = await prisma.blog.findMany({
     where: {
@@ -180,6 +210,8 @@ export const createBlog = async (params: CreateBlogDTO) => {
       published,
       cover,
       author,
+      seriesId,
+      seriesOrder,
       tags: tags
         ? {
             connect: tags.map((tagID) => ({ id: tagID })),
@@ -232,8 +264,19 @@ export const updateBlog = async (params: UpdateBlogDTO) => {
     throw new Error(error);
   }
 
-  const { id, title, description, slug, cover, author, body, published, tags } =
-    result.data;
+  const {
+    id,
+    title,
+    description,
+    slug,
+    cover,
+    author,
+    body,
+    published,
+    tags,
+    seriesId,
+    seriesOrder,
+  } = result.data;
 
   const blog = await prisma.blog.findUnique({
     where: { id },
@@ -262,6 +305,8 @@ export const updateBlog = async (params: UpdateBlogDTO) => {
       author: author ?? blog.author,
       body: body ?? blog.body,
       published: published ?? blog.published,
+      seriesId: seriesId ?? blog.seriesId,
+      seriesOrder: seriesOrder ?? blog.seriesOrder,
       tags: {
         connect: tagsToConnect?.length ? tagsToConnect : undefined,
         disconnect: tagsToDisconnect.length ? tagsToDisconnect : undefined,
