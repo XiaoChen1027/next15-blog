@@ -216,14 +216,12 @@ export function SeriesManagement({
           <CardDescription>查看和管理所有系列文章</CardDescription>
         </CardHeader>
         <CardContent>
-          <DataTable
+          <DataTable<Series, unknown>
             columns={columns}
             data={series}
             total={total}
             params={tableParams}
             updateParams={updateTableParams}
-            searchKey="title"
-            searchPlaceholder="搜索系列文章..."
             noResult={
               <div className="grid place-content-center gap-4 py-16">
                 <IllustrationNoContent />

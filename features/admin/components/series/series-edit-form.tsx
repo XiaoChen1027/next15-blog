@@ -119,7 +119,7 @@ export function SeriesEditForm({ seriesId }: SeriesEditFormProps) {
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
+      <div className="space-y-6 p-6">
         <div>
           <h1 className="text-2xl font-bold">编辑系列文章</h1>
           <p className="text-muted-foreground">加载中...</p>
@@ -140,7 +140,7 @@ export function SeriesEditForm({ seriesId }: SeriesEditFormProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div>
         <h1 className="text-2xl font-bold">编辑系列文章</h1>
         <p className="text-muted-foreground">编辑系列文章 "{series.title}"</p>

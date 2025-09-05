@@ -76,7 +76,7 @@ export function SeriesCreateForm() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6">
       <div>
         <h1 className="text-2xl font-bold">创建系列文章</h1>
         <p className="text-muted-foreground">创建一个新的系列文章</p>
@@ -149,7 +149,11 @@ export function SeriesCreateForm() {
                   <FormItem>
                     <FormLabel>封面图片</FormLabel>
                     <FormControl>
-                      <Input placeholder="输入封面图片 URL" {...field} />
+                      <Input
+                        placeholder="输入封面图片 URL"
+                        {...field}
+                        value={field.value ?? ""}
+                      />
                     </FormControl>
                     <FormDescription>
                       可选，输入封面图片的 URL 地址

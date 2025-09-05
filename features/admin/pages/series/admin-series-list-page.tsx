@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import { type ColumnDef } from "@tanstack/react-table";
 import { useSetState } from "ahooks";
-import { Plus, RotateCw, Search } from "lucide-react";
+import { Pen, Plus, RotateCw, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
@@ -14,7 +14,8 @@ import { Input } from "@/components/ui/input";
 
 import { IllustrationNoContent } from "@/components/illustrations";
 
-import { PATHS } from "@/constants";
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE, PATHS } from "@/constants";
+import { DeleteSeriesButton } from "@/features/admin/components/series/delete-series-button";
 import { type GetSeriesDTO, type Series } from "@/features/series";
 
 interface AdminSeriesListPageProps {
@@ -30,8 +31,8 @@ export const AdminSeriesListPage = ({
 
   // 查询参数（含搜索与排序）
   const [params, updateParams] = useSetState<GetSeriesDTO>({
-    pageIndex: 1,
-    pageSize: 100,
+    pageIndex: DEFAULT_PAGE_INDEX,
+    pageSize: DEFAULT_PAGE_SIZE,
     orderBy: "createdAt",
     order: "desc",
   } as GetSeriesDTO);
@@ -41,11 +42,11 @@ export const AdminSeriesListPage = ({
     pageIndex: number;
     pageSize: number;
   }>({
-    pageIndex: 1,
-    pageSize: 100,
+    pageIndex: DEFAULT_PAGE_INDEX,
+    pageSize: DEFAULT_PAGE_SIZE,
   });
 
-  // 双向同步（如果未来在别处改了分页，这里能同步到 DataTable）
+  // 双向同步
   React.useEffect(() => {
     if (
       pagination.pageIndex !== params.pageIndex ||
@@ -103,6 +104,47 @@ export const AdminSeriesListPage = ({
       cell: ({ row }) => (
         <div className="text-sm text-muted-foreground">
           {row.original._count.blogs} 篇
+        </div>
+      ),
+    },
+    {
+      accessorKey: "published",
+      header: "状态",
+      cell: ({ row }) => (
+        <span className="inline-flex items-center rounded border px-2 py-0.5 text-xs text-muted-foreground">
+          {row.original.published ? "已发布" : "草稿"}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "createdAt",
+      header: "创建时间",
+      cell: ({ row }) => (
+        <div className="text-sm text-muted-foreground">
+          {new Date(row.original.createdAt).toLocaleDateString()}
+        </div>
+      ),
+    },
+    {
+      id: "actions",
+      header: "操作",
+      cell: ({ row }) => (
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => router.push(`/admin/series/edit/${row.original.id}`)}
+            aria-label="编辑"
+            title="编辑"
+          >
+            <Pen className="size-4" />
+          </Button>
+
+          <DeleteSeriesButton
+            id={row.original.id}
+            title={row.original.title}
+            refreshAsync={() => Promise.resolve(router.refresh())}
+          />
         </div>
       ),
     },
@@ -166,7 +208,11 @@ export const AdminSeriesListPage = ({
 
   function handleReset() {
     updateInputParams({ title: "", slug: "" });
-    updateParams({ title: "", slug: undefined, pageIndex: 1 } as GetSeriesDTO);
+    updateParams({
+      title: "",
+      slug: undefined,
+      pageIndex: DEFAULT_PAGE_INDEX,
+    } as GetSeriesDTO);
   }
 
   function handleGoToCreate() {

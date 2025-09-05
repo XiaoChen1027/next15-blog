@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -80,6 +81,9 @@ export const CreateTagButton = ({ refreshAsync }: CreateTagButtonProps) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>创建标签</DialogTitle>
+          <DialogDescription>
+            创建标签名称、slug、类型与图标。
+          </DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form autoComplete="off">
