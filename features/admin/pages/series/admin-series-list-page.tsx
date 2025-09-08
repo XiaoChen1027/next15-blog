@@ -37,7 +37,7 @@ export const AdminSeriesListPage = ({
     order: "desc",
   } as GetSeriesDTO);
 
-  // DataTable 专用分页参数，保持严格类型
+  // DataTable 专用分页参数
   const [pagination, setPagination] = useSetState<{
     pageIndex: number;
     pageSize: number;
@@ -46,7 +46,12 @@ export const AdminSeriesListPage = ({
     pageSize: DEFAULT_PAGE_SIZE,
   });
 
-  // 双向同步
+  // 列表数据（初始化为服务端数据）
+  const [list, setList] = React.useState<Series[]>(series);
+  const [totalCount, setTotalCount] = React.useState<number>(total);
+  const [loading, setLoading] = React.useState(false);
+
+  // 双向同步分页
   React.useEffect(() => {
     if (
       pagination.pageIndex !== params.pageIndex ||
@@ -76,7 +81,60 @@ export const AdminSeriesListPage = ({
     slug?: string;
   }>({});
 
+  // 根据 params 拉取列表
+  React.useEffect(() => {
+    void fetchList();
+  }, [
+    params.pageIndex,
+    params.pageSize,
+    params.title,
+    params.slug,
+    params.order,
+    params.orderBy,
+  ]);
+
+  async function fetchList() {
+    try {
+      setLoading(true);
+      const usp = new URLSearchParams();
+      if (params.title) usp.set("title", params.title);
+      if (params.slug) usp.set("slug", params.slug);
+      if (params.orderBy) usp.set("orderBy", params.orderBy);
+      if (params.order) usp.set("order", params.order);
+      usp.set("pageIndex", String(params.pageIndex ?? DEFAULT_PAGE_INDEX));
+      usp.set("pageSize", String(params.pageSize ?? DEFAULT_PAGE_SIZE));
+
+      const res = await fetch(`/api/series?${usp.toString()}`);
+      if (!res.ok) throw new Error("获取列表失败");
+      const data: { series: Series[]; total: number } = await res.json();
+      setList(data.series ?? []);
+      setTotalCount(data.total ?? 0);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   const columns: ColumnDef<Series, unknown>[] = [
+    {
+      id: "cover",
+      header: "封面",
+      cell: ({ row }) => (
+        <div className="h-12 w-16 overflow-hidden rounded border bg-muted/30">
+          {row.original.cover ? (
+            <img
+              src={row.original.cover}
+              alt={row.original.title}
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          ) : (
+            <div className="grid h-full w-full place-content-center text-xs text-muted-foreground">
+              无
+            </div>
+          )}
+        </div>
+      ),
+    },
     {
       accessorKey: "title",
       header: "标题",
@@ -184,8 +242,9 @@ export const AdminSeriesListPage = ({
 
       <DataTable<Series, unknown>
         columns={columns}
-        data={series}
-        total={total}
+        data={list}
+        total={totalCount}
+        loading={loading}
         params={pagination}
         updateParams={setPagination}
         noResult={
@@ -203,6 +262,7 @@ export const AdminSeriesListPage = ({
     updateParams({
       title: inputParams.title,
       slug: inputParams.slug,
+      pageIndex: DEFAULT_PAGE_INDEX,
     } as GetSeriesDTO);
   }
 

@@ -179,6 +179,13 @@ export const CreateBlogForm = () => {
                     try {
                       const file = e.target.files?.[0];
                       if (file) {
+                        // 前端大小预检：10MB
+                        const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+                        if (file.size > MAX_FILE_SIZE_BYTES) {
+                          showErrorToast("文件大小超过 10MB 限制");
+                          return;
+                        }
+
                         const fd = new FormData();
                         fd.append("file", file);
                         const toastID = showLoadingToast("上传中");
@@ -186,8 +193,9 @@ export const CreateBlogForm = () => {
                         hideToast(toastID);
 
                         if (error) {
+                          console.log(error);
                           showErrorToast(error);
-                          return [];
+                          return;
                         }
 
                         if (url) {
@@ -200,6 +208,8 @@ export const CreateBlogForm = () => {
                         showInfoToast("请选择一个文件");
                       }
                     } catch (error) {
+                      console.log(error);
+
                       showErrorToast(error as string);
                     }
                   }}

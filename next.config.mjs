@@ -14,6 +14,11 @@ const config = {
   },
   // Next.js 开发模式默认会开启 React Strict Mode，会渲染2次，我们不需要
   reactStrictMode: false,
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
+  },
   images: {
     remotePatterns: [
       {

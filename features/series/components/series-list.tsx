@@ -30,7 +30,24 @@ export function SeriesList({ series }: SeriesListProps) {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {series.map((item) => (
-        <Card key={item.id} className="group hover:shadow-lg transition-shadow">
+        <Card
+          key={item.id}
+          className="group overflow-hidden hover:shadow-lg transition-shadow"
+        >
+          {/* 封面区域 */}
+          {item.cover ? (
+            <NextLink href={`/series/${item.slug}`}>
+              <div className="relative h-40 w-full overflow-hidden">
+                <img
+                  src={item.cover}
+                  alt={item.title}
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
+              </div>
+            </NextLink>
+          ) : null}
           <CardHeader>
             <div className="flex items-start justify-between">
               <div className="space-y-1">

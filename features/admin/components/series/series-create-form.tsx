@@ -27,9 +27,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { showErrorToast, showSuccessToast } from "@/components/ui/toast";
+import {
+  hideToast,
+  showErrorToast,
+  showLoadingToast,
+  showSuccessToast,
+} from "@/components/ui/toast";
 
 import { type CreateSeriesDTO, createSeriesSchema } from "@/features/series";
+import { uploadFile } from "@/features/upload";
 
 /**
  * 系列文章创建表单组件
@@ -74,6 +80,37 @@ export function SeriesCreateForm() {
       setIsSubmitting(false);
     }
   };
+
+  /**
+   * 处理封面文件选择并上传
+   * @param file 选择的文件
+   */
+  async function handleCoverFileChange(file: File | undefined) {
+    if (!file) return;
+
+    const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE_BYTES) {
+      showErrorToast("文件大小超过 10MB 限制");
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append("file", file);
+    const toastID = showLoadingToast("上传中");
+    const { url, error } = await uploadFile(fd);
+    hideToast(toastID);
+
+    if (error) {
+      showErrorToast(error);
+      return;
+    }
+
+    if (url) {
+      showSuccessToast("上传成功");
+      // 写入表单 cover
+      form.setValue("cover", url);
+    }
+  }
 
   return (
     <div className="space-y-6 p-6">
@@ -159,6 +196,13 @@ export function SeriesCreateForm() {
                       可选，输入封面图片的 URL 地址
                     </FormDescription>
                     <FormMessage />
+                    <Input
+                      type="file"
+                      className="mt-2"
+                      onChange={async (e) => {
+                        await handleCoverFileChange(e.target.files?.[0]);
+                      }}
+                    />
                   </FormItem>
                 )}
               />
